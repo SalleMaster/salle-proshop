@@ -5,4 +5,6 @@ export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL';
 export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST';
 export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS';
 export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL';
-export const USER_LOGOUT = 'USER_LOGOUT';
+
+export const SET_USER = 'SET_USER';
+export const LOGOUT_USER = 'LOGOUT_USER';

@@ -17,7 +17,10 @@ const RegisterScreen = ({ location, history }) => {
   const dispatch = useDispatch();
 
   const userRegister = useSelector((state) => state.userRegister);
-  const { loading, error, userInfo } = userRegister;
+  const { loading, error } = userRegister;
+
+  const user = useSelector((state) => state.user);
+  const { userInfo } = user;
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
@@ -50,6 +53,7 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Enter name'
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           ></Form.Control>
         </Form.Group>
 
@@ -60,6 +64,7 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Enter email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           ></Form.Control>
         </Form.Group>
 
@@ -70,6 +75,7 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Enter password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           ></Form.Control>
         </Form.Group>
 
@@ -80,6 +86,7 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Confirm password'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            required
           ></Form.Control>
         </Form.Group>
 
@@ -88,14 +95,14 @@ const RegisterScreen = ({ location, history }) => {
         </Button>
       </Form>
 
-      <Row className='py-3'>
+      {/* <Row className='py-3'>
         <Col>
           Have an Account?{' '}
           <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
             Login
           </Link>
         </Col>
-      </Row>
+      </Row> */}
     </FormContainer>
   );
 };
