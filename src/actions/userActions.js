@@ -7,16 +7,19 @@ import {
   USER_LOGIN_FAIL,
   SET_USER,
   LOGOUT_USER,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
 } from '../constants/userConstants';
 import { auth, db } from '../firebase/config';
 
+// Register
 export const register = (name, email, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST,
     });
     const cred = await auth.createUserWithEmailAndPassword(email, password);
-    console.log(cred);
 
     await db.collection('users').doc(cred.user.uid).set({
       name,
@@ -34,6 +37,7 @@ export const register = (name, email, password) => async (dispatch) => {
   }
 };
 
+// Login
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
@@ -52,6 +56,7 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
+// Set User
 export const setUser = (cred) => async (dispatch) => {
   try {
     const userInfo = await (
@@ -74,9 +79,35 @@ export const setUser = (cred) => async (dispatch) => {
   }
 };
 
+// Logout
 export const logout = () => (dispatch) => {
   auth.signOut();
   dispatch({
     type: LOGOUT_USER,
   });
+};
+
+// List Users
+export const listUsers = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
+
+    const snap = await db.collection('users').get();
+
+    const data = snap.docs.map((doc) => {
+      return { ...doc.data(), _id: doc.id };
+    });
+
+    dispatch({
+      type: USER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload: error.message,
+    });
+  }
 };

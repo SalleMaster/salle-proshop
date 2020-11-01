@@ -12,6 +12,7 @@ import MainNavbar from './components/MainNavbar';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import UserListScreen from './screens/UserListScreen';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const App = () => {
         <Container>
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' component={RegisterScreen} />
+          <Route path='/admin/userList' component={UserListScreen} />
           <Route path='/' component={HomeScreen} exact />
         </Container>
       </main>

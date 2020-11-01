@@ -8,3 +8,8 @@ export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL';
 
 export const SET_USER = 'SET_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
+
+export const USER_LIST_REQUEST = 'USER_LIST_REQUEST';
+export const USER_LIST_SUCCESS = 'USER_LIST_SUCCESS';
+export const USER_LIST_FAIL = 'USER_LIST_FAIL';
+export const USER_LIST_RESET = 'USER_LIST_RESET';
