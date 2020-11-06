@@ -8,6 +8,8 @@ import {
   userLoginReducer,
   userReducer,
   userListReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
 } from './reducers/userReducers';
 
 // Combine Reducers
@@ -16,6 +18,8 @@ const reducer = combineReducers({
   userLogin: userLoginReducer,
   user: userReducer,
   userList: userListReducer,
+  userDetails: userDetailsReducer,
+  userUpdate: userUpdateProfileReducer,
 });
 
 const middleware = [thunk];

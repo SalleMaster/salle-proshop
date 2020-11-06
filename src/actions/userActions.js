@@ -10,6 +10,12 @@ import {
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
 } from '../constants/userConstants';
 import { auth, db } from '../firebase/config';
 
@@ -107,6 +113,65 @@ export const listUsers = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_LIST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// Get User Details
+export const getUserDetails = (uid) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
+
+    console.log(uid);
+
+    let userDetails = await (
+      await db.collection('users').doc(uid).get()
+    ).data();
+
+    userDetails.uid = uid;
+
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: userDetails,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// User Update Profile
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
+
+    const { name, isAdmin, uid } = user;
+
+    const userRef = db.collection('users').doc(uid);
+
+    await userRef.update({
+      name,
+      isAdmin,
+    });
+
+    const updatedUser = await (
+      await db.collection('users').doc(uid).get()
+    ).data();
+
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: updatedUser,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
       payload: error.message,
     });
   }
