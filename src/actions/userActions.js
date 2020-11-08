@@ -16,6 +16,9 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
 } from '../constants/userConstants';
 import { auth, db } from '../firebase/config';
 
@@ -172,6 +175,34 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+// Delete User
+export const deleteUser = (uid, userInfo) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DELETE_REQUEST,
+    });
+
+    // Logged in user
+    const currentUser = userInfo;
+    if (!currentUser.isAdmin) {
+      throw new Error('Not Authorized!');
+    }
+
+    // Find user from database & delete it
+    const userRef = await db.collection('users').doc(uid);
+    await userRef.delete();
+
+    dispatch({
+      type: USER_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DELETE_FAIL,
       payload: error.message,
     });
   }

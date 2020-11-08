@@ -4,8 +4,9 @@ import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import { USER_DELETE_RESET } from '../constants/userConstants';
 
-import { listUsers } from '../actions/userActions';
+import { listUsers, deleteUser } from '../actions/userActions';
 
 const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -16,28 +17,37 @@ const UserListScreen = ({ history }) => {
   const userList = useSelector((state) => state.userList);
   const { loading, error, users } = userList;
 
+  const userDelete = useSelector((state) => state.userDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = userDelete;
+
   useEffect(() => {
+    dispatch({ type: USER_DELETE_RESET });
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
       history.push('/login');
     }
-  }, [dispatch, userInfo, history]);
+  }, [dispatch, userInfo, history, successDelete]);
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (uid) => {
     if (window.confirm('Are you sure')) {
-      console.log('delete user');
-      //   dispatch(deleteUser(id))
+      dispatch(deleteUser(uid, userInfo));
     }
   };
 
   return (
     <>
       <h1>Users</h1>
-      {loading ? (
+      {loading || loadingDelete ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : errorDelete ? (
+        <Message variant='danger'>{errorDelete}</Message>
       ) : (
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
