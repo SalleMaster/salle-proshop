@@ -9,6 +9,6 @@ export const deleteProduct = () => async (dispatch, getState) => {
 };
 
 // Create Product
-export const createProduct = () => async (dispatch, getState) => {
-  console.log('create product');
+export const createProduct = (data) => async (dispatch, getState) => {
+  console.log('create product action', data);
 };
