@@ -15,7 +15,14 @@ const ProductListScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products, page, pages } = productList;
+  const { loading, error, products } = productList;
+
+  const productDelete = useSelector((state) => state.productDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = productDelete;
 
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
@@ -26,10 +33,10 @@ const ProductListScreen = ({ history }) => {
     }
 
     dispatch(listProducts());
-  }, []);
+  }, [successDelete]);
 
-  const deleteHandler = () => {
-    console.log('delete');
+  const deleteHandler = (id) => {
+    dispatch(deleteProduct(id));
   };
 
   return (
@@ -46,10 +53,8 @@ const ProductListScreen = ({ history }) => {
           </LinkContainer>
         </Col>
       </Row>
-      {/* {loadingDelete && <Loader />} */}
-      {/* {errorDelete && <Message variant='danger'>{errorDelete}</Message>} */}
-      {/* {loadingCreate && <Loader />} */}
-      {/* {errorCreate && <Message variant='danger'>{errorCreate}</Message>} */}
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
