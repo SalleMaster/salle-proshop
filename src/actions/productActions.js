@@ -6,6 +6,9 @@ import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
 } from '../constants/productConstants';
@@ -73,6 +76,7 @@ export const createProduct = (data) => async (dispatch, getState) => {
       imageURL,
       name,
       price,
+      numReviews: 0,
     });
 
     dispatch({ type: PRODUCT_CREATE_SUCCESS });
@@ -80,3 +84,22 @@ export const createProduct = (data) => async (dispatch, getState) => {
     dispatch({ type: PRODUCT_CREATE_FAIL, payload: error.message });
   }
 };
+
+// List Product Details
+export const listProductDetails = (id) => async (dispatch, getState) => {
+  try {
+    console.log(id);
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+
+    const productDetails = await (
+      await db.collection('products').doc(id).get()
+    ).data();
+
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: productDetails });
+  } catch (error) {
+    dispatch({ type: PRODUCT_DETAILS_FAIL, payload: error.message });
+  }
+};
+
+// Create Product Review
+export const createProductReview = (review) => async (dispatch, getState) => {};

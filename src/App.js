@@ -16,6 +16,7 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductCreateScreen from './screens/ProductCreateScreen';
+import ProductScreen from './screens/ProductScreen';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const App = () => {
         <Container>
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' component={RegisterScreen} />
+          <Route path='/product/:id' component={ProductScreen} />
           <Route path='/admin/userList' component={UserListScreen} />
           <Route path='/admin/user/:uid' component={UserEditScreen} />
           <Route path='/admin/productlist' component={ProductListScreen} />

@@ -17,6 +17,7 @@ import {
   productListReducer,
   productCreateReducer,
   productDeleteReducer,
+  productDetailsReducer,
 } from './reducers/productReducers';
 
 // Combine Reducers
@@ -31,6 +32,7 @@ const reducer = combineReducers({
   productList: productListReducer,
   productCreate: productCreateReducer,
   productDelete: productDeleteReducer,
+  productDetails: productDetailsReducer,
 });
 
 const middleware = [thunk];
