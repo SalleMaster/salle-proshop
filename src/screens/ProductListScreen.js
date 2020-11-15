@@ -35,8 +35,8 @@ const ProductListScreen = ({ history }) => {
     dispatch(listProducts());
   }, [successDelete]);
 
-  const deleteHandler = (id) => {
-    dispatch(deleteProduct(id));
+  const deleteHandler = (id, imageName) => {
+    dispatch(deleteProduct(id, imageName));
   };
 
   return (
@@ -90,7 +90,9 @@ const ProductListScreen = ({ history }) => {
                       <Button
                         variant='danger'
                         className='btn-sm'
-                        onClick={() => deleteHandler(product._id)}
+                        onClick={() =>
+                          deleteHandler(product._id, product.imageName)
+                        }
                       >
                         <i className='fas fa-trash'></i>
                       </Button>

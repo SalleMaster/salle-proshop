@@ -11,6 +11,9 @@ import {
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
+  PRODUCT_EDIT_REQUEST,
+  PRODUCT_EDIT_SUCCESS,
+  PRODUCT_EDIT_FAIL,
 } from '../constants/productConstants';
 
 // List Products
@@ -35,11 +38,13 @@ export const listProducts = () => async (dispatch, getState) => {
 };
 
 // Delete Product
-export const deleteProduct = (id) => async (dispatch, getState) => {
+export const deleteProduct = (id, imageName) => async (dispatch, getState) => {
   try {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
 
     await db.collection('products').doc(id).delete();
+    var imageRef = await storage.ref(imageName);
+    await imageRef.delete();
 
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
   } catch (error) {
@@ -74,9 +79,12 @@ export const createProduct = (data) => async (dispatch, getState) => {
       countInStock,
       description,
       imageURL,
+      imageName: imageFile.name,
       name,
       price,
       numReviews: 0,
+      rating: 0,
+      reviews: [],
     });
 
     dispatch({ type: PRODUCT_CREATE_SUCCESS });
@@ -88,16 +96,35 @@ export const createProduct = (data) => async (dispatch, getState) => {
 // List Product Details
 export const listProductDetails = (id) => async (dispatch, getState) => {
   try {
-    console.log(id);
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
     const productDetails = await (
       await db.collection('products').doc(id).get()
     ).data();
 
+    productDetails._id = id;
+
     dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: productDetails });
   } catch (error) {
     dispatch({ type: PRODUCT_DETAILS_FAIL, payload: error.message });
+  }
+};
+
+// Product Edit
+export const editProduct = (data, id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_EDIT_REQUEST });
+
+    console.log(data, id);
+
+    var productRef = await db.collection('products').doc(id);
+
+    await productRef.update(data);
+
+    dispatch({ type: PRODUCT_EDIT_SUCCESS });
+    dispatch(listProductDetails(id));
+  } catch (error) {
+    dispatch({ type: PRODUCT_EDIT_FAIL, payload: error.message });
   }
 };
 

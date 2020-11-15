@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
+import { Link } from 'react-router-dom';
+import { Form, Button } from 'react-bootstrap';
 
-import { createProduct } from '../actions/productActions';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { PRODUCT_EDIT_RESET } from '../constants/productConstants';
 
-const ProductCreateScreen = ({ history }) => {
+import { listProductDetails, editProduct } from '../actions/productActions';
+
+const ProductEditScreen = ({ match }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [imageFile, setImageFile] = useState({});
@@ -20,39 +21,48 @@ const ProductCreateScreen = ({ history }) => {
 
   const dispatch = useDispatch();
 
-  const productCreate = useSelector((state) => state.productCreate);
-  const { loading, error, success } = productCreate;
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
+
+  const productEdit = useSelector((state) => state.productEdit);
+  const {
+    loading: loadingEdit,
+    error: errorEdit,
+    success: successEdit,
+  } = productEdit;
 
   useEffect(() => {
-    if (success) {
-      setName('');
-      setPrice(0);
-      setImageFile({});
-      setBrand('');
-      setCategory('');
-      setCountInStock(0);
-      setDescription('');
+    if (!product || product._id !== match.params.id) {
+      dispatch(listProductDetails(match.params.id));
+    }
 
+    if (product) {
+      setName(product.name);
+      setPrice(product.price);
+      setBrand(product.brand);
+      setCategory(product.category);
+      setCountInStock(product.countInStock);
+      setDescription(product.description);
+    }
+
+    if (successEdit) {
       setTimeout(() => {
-        dispatch({
-          type: PRODUCT_CREATE_RESET,
-        });
+        dispatch({ type: PRODUCT_EDIT_RESET });
       }, 5000);
     }
-  }, [success, dispatch]);
+  }, [dispatch, match, product, successEdit]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     const data = {
       name,
       price,
-      imageFile,
       brand,
       category,
       countInStock,
       description,
     };
-    dispatch(createProduct(data));
+    dispatch(editProduct(data, product._id));
   };
 
   return (
@@ -61,14 +71,16 @@ const ProductCreateScreen = ({ history }) => {
         Go Back
       </Link>
       <FormContainer>
-        <h1>Create Product</h1>
-        {loading ? (
+        <h1>Edit Product</h1>
+        {loading || loadingEdit ? (
           <Loader />
-        ) : error ? (
+        ) : error || errorEdit ? (
           <Message variant='danger'>{error}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
-            {success && <Message variant='success'>Product Created</Message>}
+            {successEdit && (
+              <Message variant='success'>Product Updated</Message>
+            )}
             <Form.Group controlId='name'>
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -98,7 +110,6 @@ const ProductCreateScreen = ({ history }) => {
                 label='Choose File'
                 custom
                 onChange={(e) => setImageFile(e.target.files[0])}
-                required
               ></Form.File>
               {imageFile && imageFile.name}
             </Form.Group>
@@ -148,7 +159,7 @@ const ProductCreateScreen = ({ history }) => {
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Create
+              Update
             </Button>
           </Form>
         )}
@@ -157,4 +168,4 @@ const ProductCreateScreen = ({ history }) => {
   );
 };
 
-export default ProductCreateScreen;
+export default ProductEditScreen;
