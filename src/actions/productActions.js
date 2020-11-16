@@ -111,13 +111,29 @@ export const listProductDetails = (id) => async (dispatch, getState) => {
 };
 
 // Product Edit
-export const editProduct = (data, id) => async (dispatch, getState) => {
+export const editProduct = (data, id, imageFile) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: PRODUCT_EDIT_REQUEST });
 
-    console.log(data, id);
-
     var productRef = await db.collection('products').doc(id);
+
+    if (imageFile.name) {
+      // Upload new image
+      const storageRef = storage.ref(imageFile.name);
+      await storageRef.put(imageFile);
+      const imageURL = await storage.ref(imageFile.name).getDownloadURL();
+
+      data.imageName = imageFile.name;
+      data.imageURL = imageURL;
+
+      // Remove old image
+      const oldImage = (await productRef.get()).data().imageName;
+      const imageRef = await storage.ref(oldImage);
+      await imageRef.delete();
+    }
 
     await productRef.update(data);
 

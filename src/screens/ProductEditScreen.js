@@ -32,6 +32,7 @@ const ProductEditScreen = ({ match }) => {
   } = productEdit;
 
   useEffect(() => {
+    dispatch({ type: PRODUCT_EDIT_RESET });
     if (!product || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
     }
@@ -62,7 +63,7 @@ const ProductEditScreen = ({ match }) => {
       countInStock,
       description,
     };
-    dispatch(editProduct(data, product._id));
+    dispatch(editProduct(data, product._id, imageFile));
   };
 
   return (
