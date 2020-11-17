@@ -19,6 +19,7 @@ import {
   productDeleteReducer,
   productDetailsReducer,
   productEditReducer,
+  productReviewCreateReducer,
 } from './reducers/productReducers';
 
 // Combine Reducers
@@ -35,6 +36,7 @@ const reducer = combineReducers({
   productDelete: productDeleteReducer,
   productDetails: productDetailsReducer,
   productEdit: productEditReducer,
+  productReviewCreate: productReviewCreateReducer,
 });
 
 const middleware = [thunk];

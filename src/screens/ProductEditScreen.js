@@ -32,7 +32,6 @@ const ProductEditScreen = ({ match }) => {
   } = productEdit;
 
   useEffect(() => {
-    dispatch({ type: PRODUCT_EDIT_RESET });
     if (!product || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
     }
@@ -75,8 +74,10 @@ const ProductEditScreen = ({ match }) => {
         <h1>Edit Product</h1>
         {loading || loadingEdit ? (
           <Loader />
-        ) : error || errorEdit ? (
+        ) : error ? (
           <Message variant='danger'>{error}</Message>
+        ) : errorEdit ? (
+          <Message variant='danger'>{errorEdit}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
             {successEdit && (

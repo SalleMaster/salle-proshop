@@ -1,4 +1,4 @@
-import { storage, db } from '../firebase/config';
+import { storage, db, arrayUnion, timestamp } from '../firebase/config';
 import {
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_SUCCESS,
@@ -14,6 +14,10 @@ import {
   PRODUCT_EDIT_REQUEST,
   PRODUCT_EDIT_SUCCESS,
   PRODUCT_EDIT_FAIL,
+  PRODUCT_EDIT_RESET,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
 } from '../constants/productConstants';
 
 // List Products
@@ -141,8 +145,34 @@ export const editProduct = (data, id, imageFile) => async (
     dispatch(listProductDetails(id));
   } catch (error) {
     dispatch({ type: PRODUCT_EDIT_FAIL, payload: error.message });
+    setTimeout(() => {
+      dispatch({ type: PRODUCT_EDIT_RESET });
+    }, 5000);
   }
 };
 
 // Create Product Review
-export const createProductReview = (review) => async (dispatch, getState) => {};
+export const createProductReview = (review, productId) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
+
+    let productRef = await db.collection('products').doc(productId);
+    await productRef.update({
+      reviews: arrayUnion({
+        ...review,
+        createdAt: new Date(),
+      }),
+    });
+    const reviews = (await productRef.get()).data().reviews;
+    await productRef.update({
+      numReviews: reviews.length,
+    });
+
+    dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS });
+  } catch (error) {
+    dispatch({ type: PRODUCT_CREATE_REVIEW_FAIL, payload: error.message });
+  }
+};
